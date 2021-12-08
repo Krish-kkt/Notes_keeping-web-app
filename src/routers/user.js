@@ -3,6 +3,7 @@ const router= new express.Router();
 const User = require('../models/user');
 const auth= require('../middleware/auth');
 
+
 router.post('/user', async (req,res)=>{
     const user= new User(req.body);
     //console.log(user);
@@ -11,9 +12,11 @@ router.post('/user', async (req,res)=>{
         await user.save();
         const token= await user.generateAuthToken();
         //const userObject= user.getPublicProfile();
+        res.cookie('user_session_id', token, { maxAge: 604800000, httpOnly: true });
 
         res.status(201).send({user, token});
     } catch(e){
+        console.log(e);
         res.status(400).send(e);
     }
 
@@ -34,6 +37,8 @@ router.post('/user/login', async (req,res)=>{
         const token = await user.generateAuthToken();
         
         //const userObject= user.getPublicProfile();
+
+        res.cookie('user_session_id', token, { maxAge: 604800000, httpOnly: true });
         
         res.send({user, token});
     }catch(e){
@@ -49,10 +54,13 @@ router.post('/user/logout', auth, async (req,res)=>{
         })
 
         await req.user.save();
-        res.send();
+        res.redirect('/login');
 
     }catch(e){
-        res.status(500).send();
+        res.status(500).render('error', {
+            statusCode: 500,
+            errorMsg: 'Internal Server Error: Unable to logout'
+        });
     }
 })
 
@@ -60,11 +68,14 @@ router.post('/user/logoutall', auth, async (req,res)=>{
     try{
         req.user.tokens=[];
         await req.user.save();
-        res.send();
+        res.redirect('/login');
 
     }catch(e){
 
-        res.status(500).res.send();
+        res.status(500).render('error', {
+            statusCode: 500,
+            errorMsg: 'Internal Server Error: Unable to logout'
+        });
     }
 })
 

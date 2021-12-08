@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>To Do List</title>
+  <link rel="stylesheet" href="css/list-styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="nav">
+      NOTES
+      <br>
+      <p class="welcome-msg">Welcome <%=name%>!</p>
+      
+      <button type="button" class="logout-btn">Logout</button>
+      
+    </div>
+
+    
+
+    <div class="input-container">
+      <form class="input-item-form" >
+          <input type="text" name="newItem" placeholder="New Note" autocomplete="off" class="input-new-task">
+          <button type="submit" name="list" id="add-task-btn">Add</button>
+      </form>
+      <div id="status-container"></div>
+    </div>
+
+    
+
+    <div class="item-container">
+
+    <%  for(var i=tasks.length-1; i>=0; i-- ){ %>
+
+      <div class="item">
+          
+              <div class="item-note">
+                <input type="checkbox" class="item-checkbox" value="<%= tasks[i].completed %>">
+                <p><%=tasks[i].description%></p>
+                <input type="hidden" name="task-id" value="<%= tasks[i]._id %>">
+
+              </div>           
+
+          <form action="" class="task-delete-form" >
+            <button type="submit" class="delete-button"><img src="img/delete.png" id="delete-img" alt="delete"></button>
+            <input  type="hidden" name="task-id" value="<%=tasks[i]._id%>">
+
+          </form>
+
+          
+      </div>
+
+    <%  } %>
+      
+      
+
+    </div>
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal">
+      <div class="modal-body">
+        Are you sure you want to Logout?
+      </div>
+      <button class="close-btn"><img id="close-btn-img" src="img/cancel.png" alt=""></button>
+
+      <div class="modal-btns">
+        
+        <form action="/user/logout" method="post">
+          <button class="modal-logout-btn">Logout</button>
+        </form>
+        <form action="/user/logoutall" method="post">
+          <button class="modal-logoutall-btn">Logout All</button>
+        </form>
+      </div>
+    </div>
+
+    
+
+
+
+</body>
+<script src="js/list-js.js"></script>
+  
+  
+  
+</html>
