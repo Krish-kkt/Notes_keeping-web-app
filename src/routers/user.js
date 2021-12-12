@@ -2,31 +2,73 @@ const express=require('express');
 const router= new express.Router();
 const User = require('../models/user');
 const auth= require('../middleware/auth');
+const jwt= require('jsonwebtoken');
 
 
-router.post('/user', async (req,res)=>{
-    const user= new User(req.body);
-    //console.log(user);
+router.get('/user/email/:id', async (req, res)=>{
+    const email=req.params.id;
+    const user= await User.findOne({email});
+    if(!user){
+        return res.send({avail: true});
+    }else{
+        return res.send({avail: false});
+    }
+})
+
+
+router.get('/user/auth/:id', async (req,res)=>{
+    // const user= new User(req.body);
+    // console.log(user);
+
+    // try{
+    //     await user.save();
+    //     const token= await user.generateAuthToken();
+    //     //const userObject= user.getPublicProfile();
+    //     res.cookie('user_session_id', token, { maxAge: 604800000, httpOnly: true });
+
+    //     res.status(201).send({user, token});
+    // } catch(e){
+    //     console.log(e);
+    //     res.status(400).send(e);
+    // }
 
     try{
-        await user.save();
-        const token= await user.generateAuthToken();
-        //const userObject= user.getPublicProfile();
-        res.cookie('user_session_id', token, { maxAge: 604800000, httpOnly: true });
-
-        res.status(201).send({user, token});
-    } catch(e){
+        const token= req.params.id;
+        const decode= jwt.verify(token, process.env.JWT_KEY);
+    }catch(e){
         console.log(e);
+        return res.render('error',{
+            errorMsg: 'Not a valid verification link.',
+            statusCode: '',
+        })
+    }
+
+    try{
+        const token= req.params.id;
+        const decode= jwt.verify(token, process.env.JWT_KEY);
+        const user= new User({
+            name: decode.name,
+            email: decode.email,
+            password: decode.password
+        });
+        await user.save();
+        const loginToken= await user.generateAuthToken();
+        res.cookie('user_session_id', loginToken, { maxAge: 604800000, httpOnly: true });
+
+        res.status(201).redirect('/task');
+
+    }catch(e){
+        console.log(e);
+        if(e.code===11000){
+            return res.render('error',{
+                errorMsg: 'Email already verified using this link.',
+                statusCode: '',
+            })
+        }
         res.status(400).send(e);
     }
 
-    // user.save().then((response)=>{
-    //     res.status(201).send(response);
-    // }).catch((err)=>{
-    //     res.status(400).send({
-    //         Error: 'User not created'
-    //     })
-    // })
+
     
 })
 

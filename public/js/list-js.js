@@ -19,6 +19,9 @@ const checkBoxListener= function(){
         checkBoxButtons[i].addEventListener('click', async (e)=>{
             e.preventDefault();
             //console.log(e.target.value);
+            const overlay= document.querySelector('.modal-overlay');
+            overlay.classList.add("active");
+
             
             const newValue=(e.target.value)=== 'false' ? true: false;
             //console.log(newValue);
@@ -52,6 +55,8 @@ const checkBoxListener= function(){
                 console.log(e);
             }
 
+            overlay.classList.remove("active");
+
         })
     }
 }
@@ -65,6 +70,8 @@ const checkBoxListenerAdded= function(){
     checkBoxButtons[0].addEventListener('click', async (e)=>{
         e.preventDefault();
         //console.log(e.target.value);
+        const overlay= document.querySelector('.modal-overlay');
+        overlay.classList.add("active");
         
         const newValue=(e.target.value)=== 'false' ? true: false;
         //console.log(newValue);
@@ -98,6 +105,8 @@ const checkBoxListenerAdded= function(){
             console.log(e);
         }
 
+        overlay.classList.remove("active");
+
     })
 
 }
@@ -109,6 +118,10 @@ const deleteListener = function(){
     for(var i=0;i< deleteTaskForms.length; i++){
         deleteTaskForms[i].addEventListener('submit', async (e)=>{
             e.preventDefault();
+
+            const overlay= document.querySelector('.modal-overlay');
+            overlay.classList.add("active");
+
             const taskId=e.target.elements[1].value;
     
     
@@ -134,6 +147,8 @@ const deleteListener = function(){
     
                 console.log(e);
             }
+
+            overlay.classList.remove("active");
     
         })
     }
@@ -147,6 +162,10 @@ const deleteListenerAdded = function(){
     var deleteTaskForms= document.getElementsByClassName('task-delete-form');
     deleteTaskForms[0].addEventListener('submit', async (e)=>{
         e.preventDefault();
+
+        const overlay= document.querySelector('.modal-overlay');
+        overlay.classList.add("active");
+
         const taskId=e.target.elements[1].value;
 
 
@@ -172,6 +191,8 @@ const deleteListenerAdded = function(){
 
             console.log(e);
         }
+
+        overlay.classList.remove("active");
 
     })
 }
