@@ -33,6 +33,7 @@ router.get('/user/auth/:id', async (req,res)=>{
     // }
 
     try{
+
         const token= req.params.id;
         const decode= jwt.verify(token, process.env.JWT_KEY);
     }catch(e){
@@ -43,8 +44,11 @@ router.get('/user/auth/:id', async (req,res)=>{
         })
     }
 
+    const token= req.params.id;
+    const decode= jwt.verify(token, process.env.JWT_KEY);
+
     try{
-        const user= await User.findOne({email});
+        const user= await User.findOne({email: decode.email});
         if(user){
             return res.render('error',{
                 errorMsg: 'Email already verified using this link.',
@@ -54,11 +58,13 @@ router.get('/user/auth/:id', async (req,res)=>{
 
     }catch(e){
         console.log(e);
+        return res.render('error',{
+            errorMsg: 'Unable to verify link please try again.',
+            statusCode: '',
+        });
     }
 
     try{
-        const token= req.params.id;
-        const decode= jwt.verify(token, process.env.JWT_KEY);
         const user= new User({
             name: decode.name,
             email: decode.email,
