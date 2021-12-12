@@ -44,6 +44,19 @@ router.get('/user/auth/:id', async (req,res)=>{
     }
 
     try{
+        const user= await User.findOne({email});
+        if(user){
+            return res.render('error',{
+                errorMsg: 'Email already verified using this link.',
+                statusCode: '',
+            });
+        }
+
+    }catch(e){
+        console.log(e);
+    }
+
+    try{
         const token= req.params.id;
         const decode= jwt.verify(token, process.env.JWT_KEY);
         const user= new User({
@@ -58,13 +71,13 @@ router.get('/user/auth/:id', async (req,res)=>{
         res.status(201).redirect('/task');
 
     }catch(e){
-        console.log(e);
-        if(e.code===11000){
-            return res.render('error',{
-                errorMsg: 'Email already verified using this link.',
-                statusCode: '',
-            })
-        }
+        // console.log(e);
+        // if(e.code===11000){
+        //     return res.render('error',{
+        //         errorMsg: 'Email already verified using this link.',
+        //         statusCode: '',
+        //     })
+        // }
         res.status(400).send(e);
     }
 
