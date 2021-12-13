@@ -5,6 +5,21 @@ const form=document.querySelector('#sign-up-form');
 const signUpButton = document.querySelector('.sign-up-button');
 const errorMsg=document.querySelector('.error-msg');
 
+function ValidateEmail(email) {
+
+    var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  
+    if (email.match(validRegex)) {
+  
+      return true;
+  
+    } else {  
+      return false;
+  
+    }
+  
+  }
+
 
 signUpButton.addEventListener('click', async (e)=>{
     const email=document.querySelector('#mail').value;
@@ -29,8 +44,15 @@ signUpButton.addEventListener('click', async (e)=>{
         return;
     }
 
+    
+
     if(key!==reKey){
         errorMsg.innerText="Passwords do not match!";
+        return;
+    }
+
+    if(!ValidateEmail(email)){
+        errorMsg.innerText="Invalid mail id!";
         return;
     }
 
